@@ -5,6 +5,9 @@
 (defn get-state [component]
   (-> component .-state .-wrapper))
 
+(defn set-state [component new-state]
+  (.setState component #js {:wrapper new-state}))
+
 (defn log [value]
   (js/console.log (clj->js value))
   value)
@@ -44,8 +47,22 @@
         new-state (update-in old-state [:history] #(conj % (direction (first %))))]
     (.setState component #js {:wrapper new-state})))
 
-(let [new-game (component #js {})]
-  (js/setInterval (partial advance-snake new-game) 200)
-  (r/render-component new-game (js/document.getElementById "content")))
+(def key->direction
+  {38 d/north
+   40 d/south
+   37 d/west
+   39 d/east})
+
+(defn set-direction [component event]
+  (let [old-state (get-state component)
+        new-direction (key->direction (.-keyCode event))]
+    (.preventDefault event)
+    (set-state component (assoc old-state :direction new-direction))))
+
+(let [new-game (component #js {})
+      container (js/document.getElementById "content")]
+  (r/render-component new-game container) 
+  (aset container "onkeydown" (partial set-direction new-game))
+  (js/setInterval (partial advance-snake new-game) 200))
 
 
