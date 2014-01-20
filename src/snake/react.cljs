@@ -1,7 +1,7 @@
 (ns snake.react)
 
 (defn svg [options & children]
-  (js/React.DOM.svg (clj->js options) children))
+  (js/React.DOM.svg (clj->js options) (clj->js children)))
 
 (defn line [options]
   (js/React.DOM.line (clj->js options)))
