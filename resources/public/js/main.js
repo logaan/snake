@@ -22883,28 +22883,28 @@ snake.react.render_component = function render_component(component, node) {
 };
 goog.provide("snake.directions");
 goog.require("cljs.core");
-snake.directions.north = function north(p__7321) {
-  var vec__7323 = p__7321;
-  var x = cljs.core.nth.call(null, vec__7323, 0, null);
-  var y = cljs.core.nth.call(null, vec__7323, 1, null);
+snake.directions.south = function south(p__8922) {
+  var vec__8924 = p__8922;
+  var x = cljs.core.nth.call(null, vec__8924, 0, null);
+  var y = cljs.core.nth.call(null, vec__8924, 1, null);
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [x, y + 1], null);
 };
-snake.directions.south = function south(p__7324) {
-  var vec__7326 = p__7324;
-  var x = cljs.core.nth.call(null, vec__7326, 0, null);
-  var y = cljs.core.nth.call(null, vec__7326, 1, null);
+snake.directions.north = function north(p__8925) {
+  var vec__8927 = p__8925;
+  var x = cljs.core.nth.call(null, vec__8927, 0, null);
+  var y = cljs.core.nth.call(null, vec__8927, 1, null);
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [x, y - 1], null);
 };
-snake.directions.east = function east(p__7327) {
-  var vec__7329 = p__7327;
-  var x = cljs.core.nth.call(null, vec__7329, 0, null);
-  var y = cljs.core.nth.call(null, vec__7329, 1, null);
+snake.directions.east = function east(p__8928) {
+  var vec__8930 = p__8928;
+  var x = cljs.core.nth.call(null, vec__8930, 0, null);
+  var y = cljs.core.nth.call(null, vec__8930, 1, null);
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [x + 1, y], null);
 };
-snake.directions.west = function west(p__7330) {
-  var vec__7332 = p__7330;
-  var x = cljs.core.nth.call(null, vec__7332, 0, null);
-  var y = cljs.core.nth.call(null, vec__7332, 1, null);
+snake.directions.west = function west(p__8931) {
+  var vec__8933 = p__8931;
+  var x = cljs.core.nth.call(null, vec__8933, 0, null);
+  var y = cljs.core.nth.call(null, vec__8933, 1, null);
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [x - 1, y], null);
 };
 goog.provide("snake.core");
@@ -22913,39 +22913,54 @@ goog.require("snake.directions");
 goog.require("snake.directions");
 goog.require("snake.react");
 goog.require("snake.react");
+snake.core.get_state = function get_state(component) {
+  return component.state.wrapper;
+};
 snake.core.log = function log(value) {
   console.log(cljs.core.clj__GT_js.call(null, value));
   return value;
 };
-snake.core.explode_coord = function explode_coord(p__8049) {
-  var vec__8051 = p__8049;
-  var x = cljs.core.nth.call(null, vec__8051, 0, null);
-  var y = cljs.core.nth.call(null, vec__8051, 1, null);
+snake.core.explode_coord = function explode_coord(p__9129) {
+  var vec__9131 = p__9129;
+  var x = cljs.core.nth.call(null, vec__9131, 0, null);
+  var y = cljs.core.nth.call(null, vec__9131, 1, null);
   return new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [10 * x, 10 * y], null);
 };
-snake.core.snake_segment = function snake_segment(p__8052) {
-  var vec__8056 = p__8052;
-  var vec__8057 = cljs.core.nth.call(null, vec__8056, 0, null);
-  var x1 = cljs.core.nth.call(null, vec__8057, 0, null);
-  var y1 = cljs.core.nth.call(null, vec__8057, 1, null);
-  var vec__8058 = cljs.core.nth.call(null, vec__8056, 1, null);
-  var x2 = cljs.core.nth.call(null, vec__8058, 0, null);
-  var y2 = cljs.core.nth.call(null, vec__8058, 1, null);
+snake.core.snake_segment = function snake_segment(p__9132) {
+  var vec__9136 = p__9132;
+  var vec__9137 = cljs.core.nth.call(null, vec__9136, 0, null);
+  var x1 = cljs.core.nth.call(null, vec__9137, 0, null);
+  var y1 = cljs.core.nth.call(null, vec__9137, 1, null);
+  var vec__9138 = cljs.core.nth.call(null, vec__9136, 1, null);
+  var x2 = cljs.core.nth.call(null, vec__9138, 0, null);
+  var y2 = cljs.core.nth.call(null, vec__9138, 1, null);
   return snake.react.line.call(null, new cljs.core.PersistentArrayMap(null, 5, [new cljs.core.Keyword(null, "x1", "x1", 1013908011), x1, new cljs.core.Keyword(null, "y1", "y1", 1013908042), y1, new cljs.core.Keyword(null, "x2", "x2", 1013908012), x2, new cljs.core.Keyword(null, "y2", "y2", 1013908043), y2, new cljs.core.Keyword(null, "style", "style", 1123684643), new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "stroke", "stroke", 4416891306), "rgb(255,0,0)", new cljs.core.Keyword(null, 
   "strokeWidth", "strokeWidth", 2937970144), 2], null)], null));
 };
-snake.core.history__GT_lines = function history__GT_lines(p__8059) {
-  var map__8061 = p__8059;
-  var map__8061__$1 = cljs.core.seq_QMARK_.call(null, map__8061) ? cljs.core.apply.call(null, cljs.core.hash_map, map__8061) : map__8061;
-  var length = cljs.core.get.call(null, map__8061__$1, new cljs.core.Keyword(null, "length", "length", 4202507864));
-  var history = cljs.core.get.call(null, map__8061__$1, new cljs.core.Keyword(null, "history", "history", 1940838406));
+snake.core.history__GT_lines = function history__GT_lines(p__9139) {
+  var map__9141 = p__9139;
+  var map__9141__$1 = cljs.core.seq_QMARK_.call(null, map__9141) ? cljs.core.apply.call(null, cljs.core.hash_map, map__9141) : map__9141;
+  var length = cljs.core.get.call(null, map__9141__$1, new cljs.core.Keyword(null, "length", "length", 4202507864));
+  var history = cljs.core.get.call(null, map__9141__$1, new cljs.core.Keyword(null, "history", "history", 1940838406));
   return cljs.core.map.call(null, snake.core.snake_segment, cljs.core.partition.call(null, 2, 1, cljs.core.map.call(null, snake.core.explode_coord, cljs.core.take.call(null, length, history))));
 };
 snake.core.component = snake.react.create_class.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "getInitialState", "getInitialState", 2219830677), function() {
-  return new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null, "history", "history", 1940838406), new cljs.core.PersistentVector(null, 3, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 1], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 2], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 3], null)], null), new cljs.core.Keyword(null, 
-  "length", "length", 4202507864), 3, new cljs.core.Keyword(null, "direction", "direction", 4346280689), snake.directions.north, new cljs.core.Keyword(null, "food", "food", 1017053136), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [2, 2], null)], null);
+  return{"wrapper":new cljs.core.PersistentArrayMap(null, 4, [new cljs.core.Keyword(null, "history", "history", 1940838406), cljs.core.list(new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 3], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 2], null), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [1, 1], null)), new cljs.core.Keyword(null, "length", "length", 4202507864), 3, new cljs.core.Keyword(null, 
+  "direction", "direction", 4346280689), snake.directions.south, new cljs.core.Keyword(null, "food", "food", 1017053136), new cljs.core.PersistentVector(null, 2, 5, cljs.core.PersistentVector.EMPTY_NODE, [2, 2], null)], null)};
 }, new cljs.core.Keyword(null, "render", "render", 4374279432), function() {
   var this$ = this;
-  return snake.react.svg.call(null, cljs.core.PersistentArrayMap.EMPTY, snake.core.history__GT_lines.call(null, this$.state));
+  return snake.react.svg.call(null, cljs.core.PersistentArrayMap.EMPTY, snake.core.history__GT_lines.call(null, snake.core.get_state.call(null, this$)));
 }], null));
-snake.react.render_component.call(null, snake.core.component.call(null, {}), document.getElementById("content"));
+snake.core.advance_snake = function advance_snake(component) {
+  var old_state = snake.core.get_state.call(null, component);
+  var direction = (new cljs.core.Keyword(null, "direction", "direction", 4346280689)).cljs$core$IFn$_invoke$arity$1(old_state);
+  var new_state = cljs.core.update_in.call(null, old_state, new cljs.core.PersistentVector(null, 1, 5, cljs.core.PersistentVector.EMPTY_NODE, [new cljs.core.Keyword(null, "history", "history", 1940838406)], null), function(old_state, direction) {
+    return function(p1__9142_SHARP_) {
+      return cljs.core.conj.call(null, p1__9142_SHARP_, direction.call(null, cljs.core.first.call(null, p1__9142_SHARP_)));
+    };
+  }(old_state, direction));
+  return component.setState({"wrapper":new_state});
+};
+var new_game_9143 = snake.core.component.call(null, {});
+setInterval(cljs.core.partial.call(null, snake.core.advance_snake, new_game_9143), 500);
+snake.react.render_component.call(null, new_game_9143, document.getElementById("content"));
