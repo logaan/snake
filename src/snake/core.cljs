@@ -15,8 +15,8 @@
 (defn snake-segment [[[x1 y1] [x2 y2]]]
   (r/line {:x1 x1 :y1 y1 
            :x2 x2 :y2 y2
-           :style {:stroke "rgb(255,0,0)"
-                   :strokeWidth 2}}))
+           :style {:stroke "rgb(200,0,100)"
+                   :strokeWidth 4}}))
 
 (defn history->lines [{:keys [history length]}]
   (->> (take length history)
@@ -45,7 +45,7 @@
     (.setState component #js {:wrapper new-state})))
 
 (let [new-game (component #js {})]
-  (js/setInterval (partial advance-snake new-game) 500)
+  (js/setInterval (partial advance-snake new-game) 200)
   (r/render-component new-game (js/document.getElementById "content")))
 
 
