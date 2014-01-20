@@ -63,6 +63,6 @@
       container (js/document.getElementById "content")]
   (r/render-component new-game container) 
   (aset container "onkeydown" (partial set-direction new-game))
+  (.focus container)
   (js/setInterval (partial advance-snake new-game) 200))
-
 
