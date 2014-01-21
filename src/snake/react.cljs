@@ -6,6 +6,9 @@
 (defn line [options]
   (js/React.DOM.line (clj->js options)))
 
+(defn circle [options]
+  (js/React.DOM.circle (clj->js options)))
+
 (defn create-class [functions]
   (js/React.createClass (clj->js functions)))
 
