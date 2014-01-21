@@ -46,7 +46,7 @@
   (render [{:keys [last-state]}]
     (r/div {}
            (render last-state)
-           "You Crashed")))
+           (str "You crashed at length " (:length last-state) "."))))
 
 (def state
   (atom
