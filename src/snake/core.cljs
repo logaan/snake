@@ -27,11 +27,6 @@
        (partition 2 1)
        (map snake-segment)))
 
-(defn debug-view [{:keys [history length food]}]
-  (str ":history " (take length history) "\n"
-       ":length " length "\n"
-       ":food " food))
-
 (def state
   (atom
     {:history '([1 3] [1 2] [1 1])
@@ -43,11 +38,9 @@
   (r/create-class
     {:render
      (fn []
-       (r/div {}
-              (r/div {} (debug-view @state))
-              (r/svg {:width 210 :height 210}
-                     (draw-snake-segments @state)
-                     (food (:food @state)))))}))
+       (r/svg {:width 210 :height 210}
+              (draw-snake-segments @state)
+              (food (:food @state))))}))
 
 (defn advance-snake [state]
   (swap! state
