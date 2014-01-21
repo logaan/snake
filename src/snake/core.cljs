@@ -31,31 +31,27 @@
        ":length " length "\n"
        ":food " food))
 
+(def state
+  (atom
+    {:history '([1 3] [1 2] [1 1])
+     :length 20 
+     :direction d/south
+     :food [7 7]}))
+
 (def component
   (r/create-class
-    {:getInitialState
+    { :render
      (fn []
-       #js {:wrapper
-            {:history '([1 3] [1 2] [1 1])
-             :length 20 
-             :direction d/south
-             :food [7 7]}})
+       (r/div {}
+              (r/div {} (debug-view @state))
+              (r/svg {}
+                     (draw-snake-segments @state)
+                     (food (:food @state)))))}))
 
-     :render
-     (fn []
-       (this-as this
-                (let [state (r/get-state this)]
-                  (r/div {}
-                         (r/div {} (debug-view state))
-                         (r/svg {}
-                                (draw-snake-segments state)
-                                (food (:food state)))))))}))
-
-(defn advance-snake [component]
-  (let [old-state (r/get-state component)
-        direction (:direction old-state)
-        new-state (update-in old-state [:history] #(conj % (direction (first %))))]
-    (r/set-state! component new-state)))
+(defn advance-snake [state]
+  (swap! state
+    (fn [{:keys [direction] :as old-state}] 
+      (update-in old-state [:history] #(conj % (direction (first %)))))))
 
 (def key->direction
   {38 d/north
@@ -63,18 +59,18 @@
    37 d/west
    39 d/east})
 
-(defn set-direction [component event]
-  (let [old-state     (r/get-state component)
-        new-direction (or (key->direction (.-keyCode event))
-                          (:direction old-state))
-        new-state     (assoc old-state :direction new-direction)]
-    (.preventDefault event)
-    (r/set-state! component new-state)))
+(defn set-direction [state event]
+  (swap! state
+    (fn [{:keys [direction] :as old-state}]
+      (let [new-direction (or (key->direction (.-keyCode event)) direction)]
+        (.preventDefault event)
+        (assoc old-state :direction new-direction)))))
 
 (let [new-game (component #js {})
       container (js/document.getElementById "content")]
   (r/render-component new-game container) 
-  (aset container "onkeydown" (partial set-direction new-game))
+  (add-watch state :force-update (fn [_ _ _ _] (.forceUpdate new-game)))
+  (aset container "onkeydown" (partial set-direction state))
   (.focus container)
-  (js/setInterval (partial advance-snake new-game) 200))
+  (js/setInterval (partial advance-snake state) 200))
 
