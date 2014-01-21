@@ -1,56 +1,16 @@
 (ns snake.core
   (:require [snake.react :as r]
             [snake.directions :as d]
-            [clojure.string :as s]))
+            [snake.data :as data]
+            [snake.rendering :as rendering]))
 
 (defn log [value]
   (js/console.log (clj->js value))
   value)
 
-(defn explode-coord [[x y]]
-  [(+ 5 (* 10 x))
-   (+ 5 (* 10 y))])
-
-(defn snake-segment [[[x1 y1] [x2 y2]]]
-  (r/line {:x1 x1 :y1 y1 
-           :x2 x2 :y2 y2
-           :style {:stroke "rgb(200,0,100)"
-                   :strokeWidth 10}}))
-
-(defn food [coord]
-  (let [[cx cy] (explode-coord coord)]
-    (r/circle {:cx cx :cy cy :r 5 :fill "red"})))
-
-(defn draw-snake-segments [{:keys [history length]}]
-  (->> (take length history)
-       (map explode-coord)
-       (partition 2 1)
-       (map snake-segment)))
-
-(defprotocol Render
-  (render [state]))
-
-(defrecord Playing [history length direction food])
-
-(extend-type Playing
-  Render
-  (render [state]
-    (r/svg {:width 210 :height 210}
-           (draw-snake-segments state)
-           (food (:food state)))))
-
-(defrecord Crashed [last-state])
-
-(extend-type Crashed
-  Render
-  (render [{:keys [last-state]}]
-    (r/div {}
-           (render last-state)
-           (str "You crashed at length " (:length last-state) "."))))
-
 (def state
   (atom
-    (map->Playing
+    (data/map->Playing
       {:history   '([1 3] [1 2] [1 1])
        :length    4 
        :direction d/south
@@ -59,7 +19,7 @@
 (def component
   (r/create-class
     {:render
-     #(render @state)}))
+     #(rendering/render @state)}))
 
 (defn advance-snake [state]
   (swap! state
@@ -94,7 +54,7 @@
       (js/clearInterval interval)
       (remove-watch state :eat-food-watcher)
       (remove-watch state :crash-watcher)
-      (reset! reference (Crashed. ns)))))
+      (reset! reference (data/Crashed. ns)))))
 
 (let [new-game  (component #js {})
       container (js/document.getElementById "content")
