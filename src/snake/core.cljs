@@ -34,13 +34,13 @@
 (def state
   (atom
     {:history '([1 3] [1 2] [1 1])
-     :length 20 
+     :length 4 
      :direction d/south
      :food [7 7]}))
 
 (def component
   (r/create-class
-    { :render
+    {:render
      (fn []
        (r/div {}
               (r/div {} (debug-view @state))
@@ -66,11 +66,19 @@
         (.preventDefault event)
         (assoc old-state :direction new-direction)))))
 
-(let [new-game (component #js {})
+(defn eat-food-watcher [_k reference _os {[head & _] :history
+                                          food       :food
+                                          :as new-state}]
+  (when (= head food)
+    (swap! reference assoc :food [(rand-int 50) (rand-int 50)])
+    (swap! reference #(update-in % [:length] inc))))
+
+(let [new-game  (component #js {})
       container (js/document.getElementById "content")]
   (r/render-component new-game container) 
-  (add-watch state :force-update (fn [_ _ _ _] (.forceUpdate new-game)))
+  (add-watch state :force-update (fn [k r os ns] (.forceUpdate new-game)))
+  (add-watch state :eat-food-watcher eat-food-watcher)
   (aset container "onkeydown" (partial set-direction state))
   (.focus container)
-  (js/setInterval (partial advance-snake state) 200))
+  (js/setInterval (partial advance-snake state) 100))
 
