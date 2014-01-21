@@ -1,6 +1,7 @@
 (ns snake.core
   (:use [snake.behavior.crashing :only [crash-watcher]]
         [snake.behavior.eating :only [eat-food-watcher]]
+        [snake.behavior.moving :only [advance-snake set-direction]] 
         [snake.rendering :only [render]])
   (:require [snake.react :as r]
             [snake.directions :as d]
@@ -21,24 +22,6 @@
 (def component
   (r/create-class
     {:render #(render @state)}))
-
-(defn advance-snake [state]
-  (swap! state
-    (fn [{:keys [direction] :as old-state}] 
-      (update-in old-state [:history] #(conj % (direction (first %)))))))
-
-(def key->direction
-  {38 d/north
-   40 d/south
-   37 d/west
-   39 d/east})
-
-(defn set-direction [state event]
-  (swap! state
-    (fn [{:keys [direction] :as old-state}]
-      (let [new-direction (or (key->direction (.-keyCode event)) direction)]
-        (.preventDefault event)
-        (assoc old-state :direction new-direction)))))
 
 (let [new-game  (component #js {})
       container (js/document.getElementById "content")
