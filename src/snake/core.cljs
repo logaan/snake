@@ -1,12 +1,7 @@
 (ns snake.core
   (:require [snake.react :as r]
-            [snake.directions :as d]))
-
-(defn get-state [component]
-  (-> component .-state .-wrapper))
-
-(defn set-state! [component new-state]
-  (.setState component #js {:wrapper new-state}))
+            [snake.directions :as d]
+            [clojure.string :as s]))
 
 (defn log [value]
   (js/console.log (clj->js value))
@@ -31,29 +26,36 @@
        (partition 2 1)
        (map snake-segment)))
 
+(defn debug-view [{:keys [history length food]}]
+  (str ":history " (take length history) "\n"
+       ":length " length "\n"
+       ":food " food))
+
 (def component
   (r/create-class
     {:getInitialState
      (fn []
        #js {:wrapper
             {:history '([1 3] [1 2] [1 1])
-             :length 3
+             :length 20 
              :direction d/south
              :food [7 7]}})
 
      :render
      (fn []
        (this-as this
-                (let [state (get-state this)]
-                  (r/svg {}
-                         (draw-snake-segments state)
-                         (food (:food state))))))}))
+                (let [state (r/get-state this)]
+                  (r/div {}
+                         (r/div {} (debug-view state))
+                         (r/svg {}
+                                (draw-snake-segments state)
+                                (food (:food state)))))))}))
 
 (defn advance-snake [component]
-  (let [old-state (get-state component)
+  (let [old-state (r/get-state component)
         direction (:direction old-state)
         new-state (update-in old-state [:history] #(conj % (direction (first %))))]
-    (set-state! component new-state)))
+    (r/set-state! component new-state)))
 
 (def key->direction
   {38 d/north
@@ -62,11 +64,12 @@
    39 d/east})
 
 (defn set-direction [component event]
-  (let [old-state (get-state component)
+  (let [old-state     (r/get-state component)
         new-direction (or (key->direction (.-keyCode event))
-                          (:direction old-state))]
+                          (:direction old-state))
+        new-state     (assoc old-state :direction new-direction)]
     (.preventDefault event)
-    (set-state! component (assoc old-state :direction new-direction))))
+    (r/set-state! component new-state)))
 
 (let [new-game (component #js {})
       container (js/document.getElementById "content")]
