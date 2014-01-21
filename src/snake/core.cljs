@@ -11,7 +11,7 @@
   (atom
     (states/map->Playing
       {:history   '([1 3] [1 2] [1 1])
-       :length    4 
+       :length    3 
        :direction d/south
        :food      [10 10]})))
 
