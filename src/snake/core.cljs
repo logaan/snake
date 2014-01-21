@@ -51,10 +51,10 @@
 (def state
   (atom
     (map->Playing
-      {:history '([1 3] [1 2] [1 1])
-       :length 4 
+      {:history   '([1 3] [1 2] [1 1])
+       :length    4 
        :direction d/south
-       :food [20 20]})))
+       :food      [20 20]})))
 
 (def component
   (r/create-class
