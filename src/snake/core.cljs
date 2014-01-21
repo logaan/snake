@@ -8,7 +8,8 @@
   value)
 
 (defn explode-coord [[x y]]
-  [(* 10 x) (* 10 y)])
+  [(+ 5 (* 10 x))
+   (+ 5 (* 10 y))])
 
 (defn snake-segment [[[x1 y1] [x2 y2]]]
   (r/line {:x1 x1 :y1 y1 
@@ -36,7 +37,7 @@
     {:history '([1 3] [1 2] [1 1])
      :length 4 
      :direction d/south
-     :food [7 7]}))
+     :food [20 20]}))
 
 (def component
   (r/create-class
@@ -44,7 +45,7 @@
      (fn []
        (r/div {}
               (r/div {} (debug-view @state))
-              (r/svg {}
+              (r/svg {:width 210 :height 210}
                      (draw-snake-segments @state)
                      (food (:food @state)))))}))
 
@@ -66,12 +67,12 @@
         (.preventDefault event)
         (assoc old-state :direction new-direction)))))
 
-(defn eat-food-watcher [_k reference _os {[head & _] :history
-                                          food       :food
-                                          :as new-state}]
+(defn eat-food-watcher [_k reference _os {[head & _] :history food :food}]
   (when (= head food)
-    (swap! reference assoc :food [(rand-int 50) (rand-int 50)])
-    (swap! reference #(update-in % [:length] inc))))
+    (swap! reference
+           #(-> %
+                (assoc :food [(rand-int 20) (rand-int 20)])
+                (update-in [:length] inc)))))
 
 (let [new-game  (component #js {})
       container (js/document.getElementById "content")]
