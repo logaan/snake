@@ -1,5 +1,5 @@
 (ns snake.behavior.crashing
-  (:use [snake.data :only [Crashed]]))
+  (:use [snake.states :only [Crashed]]))
 
 (defn crash-watcher [interval _k reference _os {:keys [history length] :as ns}]
   (let [[head & tail] (take length history)

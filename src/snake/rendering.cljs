@@ -1,6 +1,6 @@
 (ns snake.rendering
   (:require [snake.react :as r]
-            [snake.data :as data]))
+            [snake.states :as states]))
 
 (defn explode-coord [[x y]]
   [(+ 5 (* 10 x))
@@ -25,18 +25,17 @@
 (defprotocol Render
   (render [state]))
 
-
-(extend-type data/Playing
+(extend-type states/Playing
   Render
   (render [state]
     (r/svg {:width 210 :height 210}
            (draw-snake-segments state)
            (food (:food state)))))
 
-
-(extend-type data/Crashed
+(extend-type states/Crashed
   Render
   (render [{:keys [last-state]}]
     (r/div {}
            (render last-state)
            (str "You crashed at length " (:length last-state) "."))))
+

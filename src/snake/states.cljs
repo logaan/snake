@@ -1,4 +1,4 @@
-(ns snake.data)
+(ns snake.states)
 
 (defrecord Playing [history length direction food])
 

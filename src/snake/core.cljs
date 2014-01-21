@@ -5,15 +5,11 @@
         [snake.rendering :only [render]])
   (:require [snake.react :as r]
             [snake.directions :as d]
-            [snake.data :as data]))
-
-(defn log [value]
-  (js/console.log (clj->js value))
-  value)
+            [snake.states :as states]))
 
 (def state
   (atom
-    (data/map->Playing
+    (states/map->Playing
       {:history   '([1 3] [1 2] [1 1])
        :length    4 
        :direction d/south
