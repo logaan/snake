@@ -27,20 +27,39 @@
        (partition 2 1)
        (map snake-segment)))
 
+(defprotocol Render
+  (render [state]))
+
+(defrecord Playing [history length direction food])
+
+(extend-type Playing
+  Render
+  (render [state]
+    (r/svg {:width 210 :height 210}
+           (draw-snake-segments state)
+           (food (:food state)))))
+
+(defrecord Crashed [last-state])
+
+(extend-type Crashed
+  Render
+  (render [{:keys [last-state]}]
+    (r/div {}
+           (render last-state)
+           "You Crashed")))
+
 (def state
   (atom
-    {:history '([1 3] [1 2] [1 1])
-     :length 4 
-     :direction d/south
-     :food [20 20]}))
+    (map->Playing
+      {:history '([1 3] [1 2] [1 1])
+       :length 4 
+       :direction d/south
+       :food [20 20]})))
 
 (def component
   (r/create-class
     {:render
-     (fn []
-       (r/svg {:width 210 :height 210}
-              (draw-snake-segments @state)
-              (food (:food @state))))}))
+     #(render @state)}))
 
 (defn advance-snake [state]
   (swap! state
@@ -67,12 +86,20 @@
                 (assoc :food [(rand-int 20) (rand-int 20)])
                 (update-in [:length] inc)))))
 
+(defn crash-watcher [interval _k reference _os {[[x y] & _] :history :as ns}]
+  (when (not (and (<= 0 x 20) (<= 0 y 20)))
+    (js/clearInterval interval)
+    (remove-watch state :eat-food-watcher)
+    (remove-watch state :crash-watcher)
+    (reset! reference (Crashed. ns))))
+
 (let [new-game  (component #js {})
-      container (js/document.getElementById "content")]
+      container (js/document.getElementById "content")
+      interval  (js/setInterval (partial advance-snake state) 100)]
   (r/render-component new-game container) 
   (add-watch state :force-update (fn [k r os ns] (.forceUpdate new-game)))
   (add-watch state :eat-food-watcher eat-food-watcher)
+  (add-watch state :crash-watcher (partial crash-watcher interval))
   (aset container "onkeydown" (partial set-direction state))
-  (.focus container)
-  (js/setInterval (partial advance-snake state) 100))
+  (.focus container))
 
