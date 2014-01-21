@@ -1,8 +1,10 @@
 (ns snake.core
+  (:use [snake.behavior.crashing :only [crash-watcher]]
+        [snake.behavior.eating :only [eat-food-watcher]]
+        [snake.rendering :only [render]])
   (:require [snake.react :as r]
             [snake.directions :as d]
-            [snake.data :as data]
-            [snake.rendering :as rendering]))
+            [snake.data :as data]))
 
 (defn log [value]
   (js/console.log (clj->js value))
@@ -14,12 +16,11 @@
       {:history   '([1 3] [1 2] [1 1])
        :length    4 
        :direction d/south
-       :food      [20 20]})))
+       :food      [10 10]})))
 
 (def component
   (r/create-class
-    {:render
-     #(rendering/render @state)}))
+    {:render #(render @state)}))
 
 (defn advance-snake [state]
   (swap! state
@@ -38,23 +39,6 @@
       (let [new-direction (or (key->direction (.-keyCode event)) direction)]
         (.preventDefault event)
         (assoc old-state :direction new-direction)))))
-
-(defn eat-food-watcher [_k reference _os {[head & _] :history food :food}]
-  (when (= head food)
-    (swap! reference
-           #(-> %
-                (assoc :food [(rand-int 20) (rand-int 20)])
-                (update-in [:length] inc)))))
-
-(defn crash-watcher [interval _k reference _os {:keys [history length] :as ns}]
-  (let [[head & tail] (take length history)
-        [x y]         head]
-    (when (or (not (and (<= 0 x 20) (<= 0 y 20)))
-              (some #{head} tail))
-      (js/clearInterval interval)
-      (remove-watch state :eat-food-watcher)
-      (remove-watch state :crash-watcher)
-      (reset! reference (data/Crashed. ns)))))
 
 (let [new-game  (component #js {})
       container (js/document.getElementById "content")
