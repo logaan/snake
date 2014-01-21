@@ -55,7 +55,8 @@
 
 (defn set-direction [component event]
   (let [old-state (get-state component)
-        new-direction (key->direction (.-keyCode event))]
+        new-direction (or (key->direction (.-keyCode event))
+                          (:direction old-state))]
     (.preventDefault event)
     (set-state component (assoc old-state :direction new-direction))))
 
